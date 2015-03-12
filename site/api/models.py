@@ -29,3 +29,15 @@ class Page(models.Model):
 
     def __unicode__(self):
         return self.url
+
+
+class Sentence(models.Model):
+    identifier = models.CharField(max_length=10, null=False)
+    text = models.TextField(null=False)
+    xml = models.TextField(null=False)
+    page = models.ForeignKey(Page, null=False, default=0)
+    i_score = models.FloatField(null=True)
+    palsnippet = models.BooleanField(null=False, default=False)
+
+    def __unicode__(self):
+        return self.text
