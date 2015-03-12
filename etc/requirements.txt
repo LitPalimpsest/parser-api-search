@@ -1,3 +1,4 @@
 Django==1.7.6
+psycopg2==2.6
 PyYAML==3.11
 yamjam==0.1.7
