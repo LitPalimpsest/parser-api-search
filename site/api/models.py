@@ -1,3 +1,8 @@
 from django.db import models
 
-# Create your models here.
+
+class Collection(models.Model):
+    text = models.CharField(max_length=64, null=False)
+
+    def __unicode__(self):
+        return self.text
