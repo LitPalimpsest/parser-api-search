@@ -14,8 +14,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_PATH = os.path.abspath(
         os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-import pdb; pdb.set_trace();
-
 from YamJam import yamjam
 CFG = yamjam(os.path.join(PROJECT_PATH, 'etc/yamjam/config.yaml'))['litlong']
 
