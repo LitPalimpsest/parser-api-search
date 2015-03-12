@@ -12,11 +12,14 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+from YamJam import yamjam
+CFG = yamjam(os.path.join(BASE_DIR, '../etc/yamjam/config.yaml'))['litlong']
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = CFG['secret-key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
