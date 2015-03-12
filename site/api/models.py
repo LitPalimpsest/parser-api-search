@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 
 
 class Collection(models.Model):
@@ -38,6 +38,23 @@ class Sentence(models.Model):
     page = models.ForeignKey(Page, null=False, default=0)
     i_score = models.FloatField(null=True)
     palsnippet = models.BooleanField(null=False, default=False)
+
+    def __unicode__(self):
+        return self.text
+
+
+class Location(models.Model):
+    text = models.CharField(max_length=128, null=False)
+    lat = models.FloatField(null=True)
+    lon = models.FloatField(null=True)
+    geom = models.PointField(null=True, srid=4326)
+    poly = models.PolygonField(null=True, srid=4326)
+    ptype = models.CharField(max_length=32, null=True)
+    in_country = models.CharField(max_length=2, null=True)
+    gazref = models.CharField(max_length=32, null=True)
+    feature_type = models.CharField(max_length=32, null=True)
+    pop_size = models.BigIntegerField(null=True)
+    objects = models.GeoManager()
 
     def __unicode__(self):
         return self.text
