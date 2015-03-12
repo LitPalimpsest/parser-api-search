@@ -58,3 +58,16 @@ class Location(models.Model):
 
     def __unicode__(self):
         return self.text
+
+
+class LocationMention(models.Model):
+    text = models.CharField(max_length=128, null=False)
+    start_word = models.CharField(max_length=10, null=False)
+    end_word = models.CharField(max_length=10, null=False)
+    document = models.ForeignKey(Document, null=False, default=0)
+    page = models.ForeignKey(Page, null=False, default=0)
+    sentence = models.ForeignKey(Sentence, null=False, default=0)
+    location = models.ForeignKey(Location, null=False, default=0)
+
+    def __unicode__(self):
+        return self.text
