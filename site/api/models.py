@@ -71,3 +71,11 @@ class LocationMention(models.Model):
 
     def __unicode__(self):
         return self.text
+
+
+class PartOfSpeech(models.Model):
+    tag = models.CharField(max_length=4, null=False)
+    description = models.CharField(max_length=40, null=True)
+
+    def __unicode__(self):
+        return self.description

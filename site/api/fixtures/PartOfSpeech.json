@@ -1,0 +1,146 @@
+[
+    {
+        "pk": 1, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "FW", 
+            "description": "Foreign word"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "JJ", 
+            "description": "Adjective"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "JJR", 
+            "description": "Adjective, comparative"
+        }
+    },
+    {
+        "pk": 4, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "JJS", 
+            "description": "Adjective, superlative"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "NN", 
+            "description": "Noun, singular or mass"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "NNS", 
+            "description": "Noun, plural"
+        }
+    },
+    {
+        "pk": 7, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "NNP", 
+            "description": "Proper noun, singular"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "NNPS", 
+            "description": "Proper noun, plural"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "RB",
+            "description": "Adverb"
+        }
+    },
+    {
+        "pk": 10, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "RBR",
+            "description": "Adverb, comparative"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "RBS",
+            "description": "Adverb, superlative"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "VB", 
+            "description": "Verb, base form"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "VBD", 
+            "description": "Verb, past tense"
+        }
+    },
+    {
+        "pk": 14, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "VBG", 
+            "description": "Verb, gerund or present participle"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "VBN", 
+            "description": "Verb, past participle"
+        }
+    },
+    {
+        "pk": 16, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "VBP", 
+            "description": "Verb, non-3rd person singular present"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "VBZ", 
+            "description": "Verb, 3rd person singular present"
+        }
+    },
+    {
+        "pk": 18, 
+        "model": "api.partofspeech", 
+        "fields": {
+            "tag": "WRB", 
+            "description": "Wh-adverb"
+        }
+    }
+]
