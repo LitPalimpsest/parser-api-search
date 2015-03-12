@@ -79,3 +79,12 @@ class PartOfSpeech(models.Model):
 
     def __unicode__(self):
         return self.description
+
+
+class POSMention(models.Model):
+    text = models.CharField(max_length=128, null=False)
+    pos = models.ForeignKey(PartOfSpeech, null=False, default=0)
+    sentence = models.ForeignKey(Sentence, null=False, default=0)
+
+    def __unicode__(self):
+        return self.text
