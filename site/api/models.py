@@ -20,3 +20,12 @@ class Document(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+class Page(models.Model):
+    url = models.URLField(null=True)
+    lang = models.CharField(max_length=16, null=True)
+    document = models.ForeignKey(Document, null=False)
+
+    def __unicode__(self):
+        return self.url
