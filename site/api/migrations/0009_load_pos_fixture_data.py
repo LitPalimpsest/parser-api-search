@@ -13,7 +13,7 @@ def load_fixture(apps, schema_editor):
 def unload_fixture(apps, schema_editor):
     "Deleting all entries for this model"
 
-    PartOfSpeech = apps.get_model(api, model_name)
+    PartOfSpeech = apps.get_model(app_name, model_name)
     PartOfSpeech.objects.all().delete()
 
 
