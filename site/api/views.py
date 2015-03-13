@@ -1,10 +1,11 @@
 from rest_framework import viewsets
-from api.models import Collection, Document, Page, Sentence
+from api.models import Collection, Document, Page, Sentence, Location
 from api.serializers import (
         CollectionSerializer,
         DocumentSerializer,
         PageSerializer,
-        SentenceSerializer,)
+        SentenceSerializer,
+        LocationSerializer,)
 
 
 class CollectionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -37,3 +38,11 @@ class SentenceViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Sentence.objects.all()
     serializer_class = SentenceSerializer
+
+
+class LocationViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows Locations to be viewed
+    """
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer

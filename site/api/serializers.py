@@ -3,7 +3,8 @@ from api.models import (
         Collection,
         Document,
         Page,
-        Sentence,)
+        Sentence,
+        Location,)
 
 
 class CollectionSerializer(serializers.HyperlinkedModelSerializer):
@@ -32,3 +33,9 @@ class SentenceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Sentence
         fields = ('url', 'text', 'i_score', 'document',)
+
+
+class LocationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Location
+        fields = ('url', 'text', 'geom', 'poly', 'ptype', )

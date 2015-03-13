@@ -8,6 +8,7 @@ router.register(r'collections', views.CollectionViewSet)
 router.register(r'documents', views.DocumentViewSet)
 router.register(r'pages', views.PageViewSet)
 router.register(r'sentences', views.SentenceViewSet)
+router.register(r'locations', views.LocationViewSet)
 
 urlpatterns = patterns('',
     # Examples:
