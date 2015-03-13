@@ -29,7 +29,7 @@ class Page(models.Model):
     document = models.ForeignKey(Document, null=False)
 
     def __unicode__(self):
-        return self.url
+        return self.identifier
 
 
 class Sentence(models.Model):
