@@ -1,3 +1,11 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from api.models import Collection
+from api.serializers import CollectionSerializer
 
-# Create your views here.
+
+class CollectionViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows Collections to be viewed
+    """
+    queryset = Collection.objects.all()
+    serializer_class = CollectionSerializer
