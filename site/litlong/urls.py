@@ -5,6 +5,7 @@ from api import views
 
 router = routers.DefaultRouter()
 router.register(r'collections', views.CollectionViewSet)
+router.register(r'documents', views.DocumentViewSet)
 
 urlpatterns = patterns('',
     # Examples:
