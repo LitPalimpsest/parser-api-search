@@ -26,7 +26,7 @@ class Document(models.Model):
 class Page(models.Model):
     identifier = models.URLField(null=True, db_column='url')
     lang = models.CharField(max_length=16, null=True)
-    document = models.ForeignKey(Document, null=False)
+    document = models.ForeignKey(Document, null=False, related_name='pages')
 
     def __unicode__(self):
         return self.identifier
@@ -36,7 +36,8 @@ class Sentence(models.Model):
     identifier = models.CharField(max_length=10, null=False)
     text = models.TextField(null=False)
     xml = models.TextField(null=False)
-    page = models.ForeignKey(Page, null=False, default=0)
+    page = models.ForeignKey(Page, null=False, default=0,
+            related_name='sentences')
     i_score = models.FloatField(null=True)
     palsnippet = models.BooleanField(null=False, default=False)
 
