@@ -69,7 +69,8 @@ class LocationMention(models.Model):
     document = models.ForeignKey(Document, null=False, default=0)
     page = models.ForeignKey(Page, null=False, default=0)
     sentence = models.ForeignKey(Sentence, null=False, default=0)
-    location = models.ForeignKey(Location, null=False, default=0)
+    location = models.ForeignKey(Location, null=False, default=0,
+            related_name='location-mentions')
 
     def __unicode__(self):
         return self.text
