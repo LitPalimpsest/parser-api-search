@@ -16,7 +16,8 @@ class Document(models.Model):
     type = models.CharField(max_length=32, null=True)
     author = models.TextField(null=True)
     majlang = models.CharField(max_length=3, null=True)
-    collection = models.ForeignKey(Collection, null=False, default=0)
+    collection = models.ForeignKey(Collection, null=False, default=0,
+            related_name='documents')
 
     def __unicode__(self):
         return self.title
