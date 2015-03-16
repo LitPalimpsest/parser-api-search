@@ -44,5 +44,5 @@ class LocationViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows Locations to be viewed
     """
-    queryset = Location.objects.all()
+    queryset = Location.objects.filter(point__isnull=False)
     serializer_class = LocationSerializer

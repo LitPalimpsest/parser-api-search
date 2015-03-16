@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_gis import serializers as gis_serializers
 from api.models import (
         Collection,
         Document,
@@ -35,7 +36,8 @@ class SentenceSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'text', 'i_score', 'document',)
 
 
-class LocationSerializer(serializers.HyperlinkedModelSerializer):
+class LocationSerializer(gis_serializers.GeoModelSerializer):
+
     class Meta:
         model = Location
-        fields = ('url', 'text', 'geom', 'poly', 'ptype', )
+        fields = ('url', 'text', 'point', 'polygon', 'polygon_type', )
