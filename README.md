@@ -1,1 +1,1 @@
-# parser-api-search
+# LitLong Edinburgh: Parser, API and Search
