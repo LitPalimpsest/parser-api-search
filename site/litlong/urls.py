@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'litlong.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
+    url(r'^$', 'api.views.home', name='home'),
+    url(r'^search/', 'api.views.search', name='search'),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
 )

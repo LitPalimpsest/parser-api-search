@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block page_title %}{% endblock %} &raquo; Lit Long</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.min.css' %}" type="text/css" media="screen" />
+{#     <link rel="stylesheet" href="{% static 'css/overall_normalize.css' %}" type="text/css" media="screen" > #}
+    <link rel="stylesheet" href="{% static 'css/overall.css' %}" type="text/css" media="screen" >
+    {% block page_specific_css_imports %}{% endblock %}
+    <style>
+        #search-form{display: inline-block; *display:inline; /* ie7 fix */ zoom:1; /* hasLayout ie7 trigger */margin: 0}
+        #search{text-align:center}
+        .search-container header { margin-left: 60px; }
+        {% block page_specific_inline_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="parent-wrapper">
+        <div class="top-header">
+            <div class="wrap">
+                <header>
+                    <div class="logo">
+                        <img src="{% static 'img/logo-icon@x2.png' %}" width="76" height="76" alt="Logo">
+                        <p><span>Lit Long :</span> Edinburgh<sup>o</sup></p>
+                    </div>
+                    <a href="#" class="nav-toggle"><img src="{% static 'img/menuToggle.gif' %}" width="25" height="21" alt="menu toggle"></a>
+                    <nav>
+                        <ul>
+                            <li><a href="#">News</a></li>
+                            <li><a href="#">Navigating with LitLong</a>
+                                <ul>
+                                    <li class="current"><a href="#">Location Visualiser</a></li>
+                                    <li><a href="#">Sentiment Visualiser</a></li>
+                                    <li><a href="#">Download our App</a></li>
+                                    <li><a href="#">The database</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Content</a>
+                                <ul>
+                                    <li><a href="#">Collections</a></li>
+                                    <li><a href="#">Contemporary authors</a></li>
+                                    <li><a href="#">Writing competition</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">About LitLong</a>
+                                <ul>
+                                    <li><a href="#">Team</a></li>
+                                    <li><a href="#">Acknowledgements</a></li>
+                                    <li><a href="#">Dissemination</a></li>
+                                    <li><a href="#">Disclaimer</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </header>
+            </div>
+        </div>   
+        <div class="search-container">
+            <div class="wrap">
+                <header>
+                    <h1>Search the Database</h1>
+                </header>
+                <div id="searchPanel" class="search">
+                </div>
+            </div>               
+        </div>  
+        <div class="main-content">
+            <div class="wrap">
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="span10 offset1 container">
+                            <div class="row-fluid">
+                                <header class="span12">
+                                </header>
+                            </div>
+                            {% if text != None %}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    {% block breadcrumb %}{% endblock %}
+                                </div>
+                            </div>
+                            {% endif %}
+{#                             {% block search_nav %}{% endblock %} #}
+                            {% block search_form %}{% endblock %}
+                            {% block content %}{% endblock %}
+                            <footer class="row-fluid">
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="wrap">
+                <footer>
+                    <nav>
+                        <ul>
+                            <li id="copyright"><a>&copy; LitLong, <script language="javascript" type="text/javascript">var today = new Date();var year = today.getFullYear();document.write(year);</script></a></li>
+                            <li><a href="#">Contact us</a></li>
+                            <li><a href="#">Disclaimer</a></li>
+                            <li><a href="#">With thanks to</a></li>
+                        </ul>
+                    </nav>
+                </footer>
+            </div>
+        </div>
+    </div>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="//use.typekit.net/exb7vga.js"></script>
+<script>var Typekit={load:function(){}};</script>
+<script>try{Typekit.load();}catch(e){}</script>
+{% block page_specific_js %}{% endblock %}
+{% if analytics_code %}{{ analytics_code }}{% endif %}
+</body>
+</html>
