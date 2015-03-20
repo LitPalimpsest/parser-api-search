@@ -9,7 +9,6 @@
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" media="screen" />
     <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.min.css' %}" type="text/css" media="screen" />
-{#     <link rel="stylesheet" href="{% static 'css/overall_normalize.css' %}" type="text/css" media="screen" > #}
     <link rel="stylesheet" href="{% static 'css/overall.css' %}" type="text/css" media="screen" >
     {% block page_specific_css_imports %}{% endblock %}
     <style>
@@ -85,7 +84,6 @@
                                 </div>
                             </div>
                             {% endif %}
-{#                             {% block search_nav %}{% endblock %} #}
                             {% block search_form %}{% endblock %}
                             {% block content %}{% endblock %}
                             <footer class="row-fluid">

@@ -1,5 +1,3 @@
-from api.forms import SearchForm
-
 from django.core.paginator import (
     Paginator,
     EmptyPage,
@@ -8,6 +6,9 @@ from django.db import connection
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import viewsets
+import re
+import string
+from api.forms import SearchForm
 from api.models import (
         Collection,
         Document,
@@ -27,38 +28,104 @@ def home(request):
 
 
 def search(request):
-    results = errors = text = None
+    docs = decs_list = colls_list = errors = text = decade = collection = None
+    collection_name = ""
+
     form = SearchForm(request.GET)
     if form.is_valid():
-        cursor = connection.cursor()
+        params = {}
         text = form.cleaned_data['text']
-        params = {'query_string': '{0}:*'.format(text)}
-        where_clause = ""
-        if text != '*':
-            where_clause = "WHERE t.fts_tokens @@ to_tsquery(%(query_string)s)"
-        sql = """
+        pattern = re.compile('[^a-zA-Z0-9 ]+')
+        if text:
+            text = string.replace(pattern.sub('', text).strip(), ' ', '&')
+            text_filter = ""
+            if text != '*':
+                params['query_string'] = '{0}:*'.format(text)
+                text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
+            text = string.replace(text, '&', ' ')
+
+        collection = request.GET.get('collection', None)
+        coll_filter = ""
+        if collection:
+            c = Collection.objects.get(id=collection)
+            collection_name = c.text
+            collection = int(collection)
+            params['coll_id'] = collection
+            coll_filter = "AND c.id = %(coll_id)s"
+
+        decade = request.GET.get('decade', None)
+        dec_filter = ""
+        if decade:
+            dec_filter = "AND (EXTRACT(DECADE FROM d.pubdate)||'0')"
+            if decade == "NA":
+                dec_filter = "{0} IS NULL".format(dec_filter)
+            else:
+                params['dec_id'] = decade
+                dec_filter = "{0} = %(dec_id)s".format(dec_filter)
+
+        cursor = connection.cursor()
+        colls_sql = """
+            SELECT
+                c.id,
+                c.text,
+                COUNT(*) AS hits
+            FROM sentence_fts AS t
+            JOIN api_sentence AS s ON t.sentence_id = s.id
+            JOIN api_page AS p ON s.page_id = p.id
+            JOIN api_document AS d ON p.document_id = d.id
+            JOIN api_collection AS c ON d.collection_id = c.id  {0} {1} {2}
+            GROUP BY c.id, c.text
+            ORDER BY c.text""".format(text_filter, dec_filter, coll_filter)
+        cursor.execute(colls_sql, params)
+        cols = ['id', 'collection', 'hits']
+        colls_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+        decs_sql = """
+            SELECT
+                CASE
+                    WHEN d.pubdate IS NULL THEN 'NA'
+                    ELSE EXTRACT(DECADE FROM d.pubdate)||'0'
+                END AS decade,
+                COUNT(*) AS hits
+            FROM sentence_fts AS t
+            JOIN api_sentence AS s ON t.sentence_id = s.id
+            JOIN api_page AS p ON s.page_id = p.id
+            JOIN api_document AS d ON p.document_id = d.id
+            JOIN api_collection AS c ON d.collection_id = c.id {0} {1} {2}
+            GROUP BY decade
+            ORDER BY decade""".format(text_filter, dec_filter, coll_filter)
+        cursor.execute(decs_sql, params)
+        cols = ['decade', 'hits']
+        decs_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+        docs_sql = """
             SELECT
                 d.id,
                 d.title,
                 COUNT (d.id) AS hits
-            FROM
-                sentence_fts AS t
+            FROM sentence_fts AS t
             JOIN api_sentence AS s ON t.sentence_id = s.id
             JOIN api_page AS p ON s.page_id = p.id
-            JOIN api_document AS d ON p.document_id = d.id {0}
+            JOIN api_document AS d ON p.document_id = d.id
+            JOIN api_collection AS c ON d.collection_id = c.id {0} {1} {2}
             GROUP BY d.id
-            ORDER BY hits DESC""".format(where_clause)
-        cursor.execute(sql, params)
-        cols = ['id', 'document', 'hits']
-        results_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
-        results = get_paginated_results(request, results_list)
+            ORDER BY hits DESC""".format(text_filter, dec_filter, coll_filter)
+        cursor.execute(docs_sql, params)
+        cols = ['id', 'title', 'hits']
+        docs_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
+        docs = get_paginated_results(request, docs_list)
     else:
         errors = form.errors
     return render(request, 'search_results.html', {
         'form': form,
-        'results': results,
+        'colls': colls_list,
+        'decs': decs_list,
+        'docs': docs,
         'errors': errors,
-        'text': text, })
+        'text': text,
+        'decade': decade,
+        'collection': collection,
+        'collection_name': collection_name})
 
 
 def get_paginated_results(request, model_list, num_records=25):

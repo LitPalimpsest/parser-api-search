@@ -11,39 +11,74 @@
 {% block search_nav %}{% include "search-nav.html" with search_type="text" %}{% endblock %}
 {% block search_form %}{% include "search-form.html" with search_type="text" %}{% endblock %}
 
+{% load humanize %}
 {% block content %}
+            {% if docs %}
             <div class="row-fluid">
-                <div class="span12">
-                    {% if results %}
+                <div class="span3">
+                    <h4><i class="icon-filter"></i> Filter (no. snippets)</h4> 
+                    <ul class="nav nav-list">
+                        <li class="nav-header"><i class="icon-th-large"></i> by Collection</li>
+                        <li{% if collection = None %} class="active"{% endif %}>
+                            <a href="/search/?{% if text %}text={{ text }}{% endif %}{% if decade %}&amp;decade={{ decade }}{% endif %}">All</a>
+                        </li>
+                        {% for row in colls %}
+                        <li{% if collection = row.id %} class="active"{% endif %}>
+                        <a href="/search/?{% if text %}text={{text}}{% endif %}{% if decade %}&amp;decade={{ decade }}{% endif %}&amp;collection={{ row.id }}">{{ row.collection }} ({{ row.hits|intcomma }})</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <ul class="nav nav-list">
+                        <li class="nav-header"><i class="icon-calendar"></i> by Decade</li>
+                        <li{% if decade = None %} class="active"{% endif %}>
+                            <a href="/search/?{% if text %}text={{text}}{% endif %}{% if collection %}&amp;collection/{{ collection }}{% endif %}">All</a>
+                        </li>
+                        {% for row in decs %}
+                        <li{% if decade = row.decade %} class="active"{% endif %}>
+                            <a href="/search/?{% if text %}text={{text}}{% endif %}{% if collection %}&amp;collection={{ collection }}{% endif %}&amp;decade={{ row.decade }}">{{ row.decade }}{% if row.decade != "NA" %}s{% endif %} ({{ row.hits|intcomma }})</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="span9">
                     <div id="results">
-                        <h3>Search results for '{{ text }}' (Page {{ results.number }} of {{ results.paginator.num_pages }})</h3>
+                        <h3>Books mentioning '{{ text }}' (Page {{ docs.number }} of {{ docs.paginator.num_pages }})</h3>
+                        {% if decade or collection %}<p>Filtered by: {% if decade %}<span class="label label-info"><i class="icon-calendar icon-white"></i> Decade ({{ decade }})</span>{% endif %} {% if collection %}<span class="label label-info"><i class="icon-th-large icon-white"></i> Collection ({{ collection_name }})</span>{% endif %}</p>{% endif %}
                         <table class="table table-striped table-hover table-condensed">
-                            <thead><tr><th><i class="icon-book"></i> Book Title</th></tr></thead>
-                        {% for result in results %}
-                        <tr><td><a href="/document/search/{{ result.id }}-{{ result.document|urlencode }}">{{ result.document }}</a></td></tr>
+                            <thead>
+                                <tr>
+                                    <th><i class="icon-book"></i> Book Title</th>
+                                    <th>#&nbsp;Snippets</th>
+                                </tr>
+                            </thead>
+                        {% for doc in docs %}
+                            <tr>
+                                <td><a href="/search/document/{{ doc.id }}-{{ doc.title|urlencode }}?text={{text}}">{{ doc.title }}</a></td>
+                                <td>{{doc.hits|intcomma}}</td>
+                            </tr>
                         {% endfor %}
                         </table>
                     </div>
                     <div>
                         <ul class="pager">
-                            {% if results.has_previous %}
+                            {% if docs.has_previous %}
                             <li class="previous">
-                                <a href="?text={{ text|urlencode }}&amp;page={{ results.previous_page_number }}">&larr; Previous</a>
+                            <a href="?text={{ text|urlencode }}{% if collection %}&amp;collection={{ collection }}{% endif %}{% if decade %}&amp;decade={{ decade }}{% endif %}&amp;page={{ docs.previous_page_number }}">&larr; Previous</a>
                             {% else %}
                             <li class="previous disabled">
                             {% endif %}
                             </li>
-                            {% if results.has_next %}
+                            {% if docs.has_next %}
                             <li class="next">
-                                <a href="?text={{ text|urlencode }}&amp;page={{ results.next_page_number }}">Next &rarr;</a>
+                            <a href="?text={{ text|urlencode }}{% if collection %}&amp;collection={{ collection }}{% endif %}{% if decade %}&amp;decade={{ decade }}{% endif %}&amp;page={{ docs.next_page_number }}">Next &rarr;</a>
                             {% else %}
                             <li class="next disabled">
                             {% endif %}
                             </li>
                         </ul>
                     </div>
-                    {% endif %}
                 </div>
             </div>
+            {% endif %}
 {% endblock %}
 
