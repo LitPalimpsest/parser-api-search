@@ -53,7 +53,7 @@
                             </thead>
                         {% for doc in docs %}
                             <tr>
-                                <td><a href="/search/document/{{ doc.id }}-{{ doc.title|urlencode }}?text={{text}}">{{ doc.title }}</a></td>
+                                <td><a href="/search/document/{{ doc.id }}?text={{text}}">{{ doc.title }}</a></td>
                                 <td>{{doc.hits|intcomma}}</td>
                             </tr>
                         {% endfor %}
