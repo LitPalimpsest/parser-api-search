@@ -1,0 +1,14 @@
+# Sample yamjam config file
+#
+# Rename as config.yaml and replace all {{properties}}
+# with the properties for your environment
+
+litlong:
+    secret-key: {{secret_key}}
+    database:
+        engine: {{db_engine}}
+        name: {{db_name}}
+        username: {{db_username}}
+        password: {{db_password}}
+        host: {{db_host}}
+        port: {{db_port}}
