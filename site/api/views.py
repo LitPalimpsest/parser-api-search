@@ -128,6 +128,51 @@ def search(request):
         'collection_name': collection_name})
 
 
+def document(request, document_id):
+    # Get document
+    doc = Document.objects.get(pk=document_id)
+    #log.debug('Document: %s-%s' % (doc.id, doc.url))
+
+    # Get snippets containing text
+    params = {'document_id': document_id}
+    text = request.GET.get('text', None)
+    pattern = re.compile('[^a-zA-Z0-9 ]+')
+    if text:
+        text = string.replace(pattern.sub('', text).strip(), ' ', '&')
+        text_filter = ""
+        if text != '*':
+            params['query_string'] = '{0}:*'.format(text)
+            text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
+        text = string.replace(text, '&', ' ')
+    sql = """
+        SELECT
+            s.text AS snippet,
+            p.url AS page_url
+        FROM sentence_fts AS t
+        JOIN api_sentence AS s ON t.sentence_id = s.id
+        JOIN api_page AS p ON s.page_id = p.id
+        JOIN api_document AS d ON p.document_id = d.id {0}
+        AND d.id = %(document_id)s
+        """.format(text_filter)
+    cursor = connection.cursor()
+    cursor.execute(sql, params)
+    cols = ['snippet', 'url']
+    snippet_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    # Convert XML character references to HTML entities
+    # for sentence in sentence_list:
+    #     sentence['text'] = unicode(escape(sentence['text']).encode(
+    #         'ascii', 'xmlcharrefreplace'))
+    #     sentence['sentence'] = unicode(escape(sentence['sentence']).encode(
+    #         'ascii', 'xmlcharrefreplace'))
+    snippets = get_paginated_results(request, snippet_list, num_records=10)
+
+    return render(request, 'document.html', {
+        'doc': doc,
+        'text': text,
+        'snippets': snippets, })
+
+
 def get_paginated_results(request, model_list, num_records=25):
     paginator = Paginator(model_list, num_records)
     page = request.GET.get('page')
