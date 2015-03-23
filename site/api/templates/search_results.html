@@ -4,7 +4,7 @@
 {% block breadcrumb %}
                     <ul class="breadcrumb">
                         <li><a href="/search/">Search</a> <span class="divider">/</span></li>
-                        <li class="active"><a href="/search/?text={{ text }}">{{ text }}</a></li>
+                        <li class="active"><a href="/search/?text={{ text }}">{{ text|title }}</a></li>
                     </ul>
 {% endblock %}
 
