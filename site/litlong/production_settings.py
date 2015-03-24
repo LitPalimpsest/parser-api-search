@@ -22,4 +22,5 @@ DATABASES = {
     }
 }
 
+STATIC_ROOT = CFG['env']['production']['static-root']
 STATIC_URL = '/static/'
