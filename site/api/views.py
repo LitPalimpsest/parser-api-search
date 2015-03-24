@@ -5,6 +5,7 @@ from django.core.paginator import (
 from django.db import connection
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+import logging
 from rest_framework import viewsets
 import re
 import string
@@ -22,6 +23,7 @@ from api.serializers import (
         SentenceSerializer,
         LocationSerializer,)
 
+log = logging.getLogger(__name__)
 
 def home(request):
     return HttpResponseRedirect('/search/')
@@ -35,6 +37,7 @@ def search(request):
     if form.is_valid():
         params = {}
         text = form.cleaned_data['text']
+        log.debug('Search term: %s' % text)
         pattern = re.compile('[^a-zA-Z0-9 ]+')
         if text:
             text = string.replace(pattern.sub('', text).strip(), ' ', '&')
@@ -131,7 +134,7 @@ def search(request):
 def document(request, document_id):
     # Get document
     doc = Document.objects.get(pk=document_id)
-    #log.debug('Document: %s-%s' % (doc.id, doc.url))
+    log.debug('Document: %s-%s' % (doc.id, doc.docid))
 
     # Get snippets containing text
     params = {'document_id': document_id}
