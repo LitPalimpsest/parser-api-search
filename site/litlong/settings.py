@@ -7,6 +7,7 @@ import os
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+ALLOWED_HOSTS = ['litlong.edina.ac.uk']
 
 # Application definition
 
