@@ -29,7 +29,7 @@ td.center{ text-align: center; }
                         <dt><i class="icon-calendar"></i> Publication Year</dt>
                         <dd>{%if doc.pubdate != None%}{{doc.pubdate|date:"o"}}{%else%}Not known{%endif%}</dd>
                         <dt><i class="icon-globe"></i> Web address</dt>
-                        <dd><a href="{{doc.external_url}}">{{doc.external_url}}</a></dd>
+                        <dd><a href="{{doc.external_url}}" onclick="trackOutboundLink('{{doc.external_url}}'); return false;">{{doc.external_url}}</a></dd>
                     </dl>
                 </div>
             </div>
