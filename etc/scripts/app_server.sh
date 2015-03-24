@@ -8,7 +8,7 @@ PYENVLOC='.pyenv/versions'
 GUNICORN="$HOME/$PYENVLOC/$PROJECT/bin/gunicorn"
 MANAGELOC="$PROJECTLOC/manage.py"
 PID="$HOME/tmp/gunicorn_$PORT.pid"
-DEFAULT_ARGS="$PROJECT.wsgi:application --settings=$PROJECT.settings --workers=5 --daemon --bind=$ADDRESS:$PORT --pid=$PID --timeout=120"
+DEFAULT_ARGS="$PROJECT.production_wsgi:application --workers=5 --daemon --bind=$ADDRESS:$PORT --pid=$PID --timeout=120"
 BASE_CMD="$GUNICORN $DEFAULT_ARGS"
 
 start_server () {
