@@ -46,10 +46,12 @@ td.center{ text-align: center; }
                                 </tr>
                             </thead>
                         {% for row in snippets %}
-                        <tr>
-                            <td class="snippet">{{ row.snippet|wrap_with_span:text|safe }}</td>
+                        <tr>{% if text != "*" %}
+                            <td class="snippet">{{ row.snippet|wrap_with_span:text|add_locations|safe }}</td>
+                            {% else %}
+                            <td class="snippet">{{ row.snippet|safe }}</td>
 {#                             <td class="center">{% if row.url %}<a href="{{ row.url }}">View</a>{% endif %}</td> #}
-                        </tr>
+                        {% endif %}</tr>
                         {% endfor %}
                         </table>
                     </div>

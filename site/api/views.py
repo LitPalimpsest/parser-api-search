@@ -38,15 +38,18 @@ def search(request):
         params = {}
         text = form.cleaned_data['text']
         log.debug('Search term: %s' % text)
-        pattern = re.compile('[^a-zA-Z0-9 ]+')
+        pattern = re.compile('[^a-zA-Z0-9\* ]+')
         if text:
-            text = string.replace(pattern.sub('', text).strip(), ' ', '&')
-            text = re.sub(r'&[&]+', '&', text)
+            text = pattern.sub('', text).strip()
             text_filter = ""
             if text != '*':
-                params['query_string'] = '{0}:*'.format(text)
+                query_string = ""
+                for term in text.split():
+                    query_string += '{0}:* & '.format(term)
+                query_string = query_string[:-3]
+                params['query_string'] = query_string
                 text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
-            text = string.replace(text, '&', ' ')
+            text = ' '.join(text.split())
 
         collection = request.GET.get('collection', None)
         coll_filter = ""
@@ -140,14 +143,18 @@ def document(request, document_id):
     # Get snippets containing text
     params = {'document_id': document_id}
     text = request.GET.get('text', None)
-    pattern = re.compile('[^a-zA-Z0-9 ]+')
+    pattern = re.compile('[^a-zA-Z0-9\* ]+')
     if text:
-        text = string.replace(pattern.sub('', text).strip(), ' ', '&')
+        text = pattern.sub('', text).strip()
         text_filter = ""
         if text != '*':
-            params['query_string'] = '{0}:*'.format(text)
+            query_string = ""
+            for term in text.split():
+                query_string += '{0}:* & '.format(term)
+            query_string = query_string[:-3]
+            params['query_string'] = query_string
             text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
-        text = string.replace(text, '&', ' ')
+        text = ' '.join(text.split())
     sql = """
         SELECT
             s.text AS snippet,
@@ -162,13 +169,6 @@ def document(request, document_id):
     cursor.execute(sql, params)
     cols = ['snippet', 'url']
     snippet_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
-
-    # Convert XML character references to HTML entities
-    # for sentence in sentence_list:
-    #     sentence['text'] = unicode(escape(sentence['text']).encode(
-    #         'ascii', 'xmlcharrefreplace'))
-    #     sentence['sentence'] = unicode(escape(sentence['sentence']).encode(
-    #         'ascii', 'xmlcharrefreplace'))
     snippets = get_paginated_results(request, snippet_list, num_records=10)
 
     return render(request, 'document.html', {
