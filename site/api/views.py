@@ -76,11 +76,17 @@ def search(request):
                 c.id,
                 c.text,
                 COUNT(*) AS hits
-            FROM sentence_fts AS t
-            JOIN api_sentence AS s ON t.sentence_id = s.id
-            JOIN api_page AS p ON s.page_id = p.id
+            FROM
+                (SELECT
+                    DISTINCT ON(s.text) s.text,
+                    s.id,
+                    s.page_id
+                FROM sentence_fts AS t
+                JOIN api_sentence AS s ON t.sentence_id = s.id
+                {0}) AS snips
+            JOIN api_page AS p ON snips.page_id = p.id
             JOIN api_document AS d ON p.document_id = d.id
-            JOIN api_collection AS c ON d.collection_id = c.id  {0} {1} {2}
+            JOIN api_collection AS c ON d.collection_id = c.id {1} {2}
             GROUP BY c.id, c.text
             ORDER BY c.text""".format(text_filter, dec_filter, coll_filter)
         cursor.execute(colls_sql, params)
@@ -94,11 +100,17 @@ def search(request):
                     ELSE EXTRACT(DECADE FROM d.pubdate)||'0'
                 END AS decade,
                 COUNT(*) AS hits
-            FROM sentence_fts AS t
-            JOIN api_sentence AS s ON t.sentence_id = s.id
-            JOIN api_page AS p ON s.page_id = p.id
+            FROM
+                (SELECT
+                    DISTINCT ON(s.text) s.text,
+                    s.id,
+                    s.page_id
+                FROM sentence_fts AS t
+                JOIN api_sentence AS s ON t.sentence_id = s.id
+                {0}) AS snips
+            JOIN api_page AS p ON snips.page_id = p.id
             JOIN api_document AS d ON p.document_id = d.id
-            JOIN api_collection AS c ON d.collection_id = c.id {0} {1} {2}
+            JOIN api_collection AS c ON d.collection_id = c.id {1} {2}
             GROUP BY decade
             ORDER BY decade""".format(text_filter, dec_filter, coll_filter)
         cursor.execute(decs_sql, params)
@@ -110,11 +122,17 @@ def search(request):
                 d.id,
                 d.title,
                 COUNT (d.id) AS hits
-            FROM sentence_fts AS t
-            JOIN api_sentence AS s ON t.sentence_id = s.id
-            JOIN api_page AS p ON s.page_id = p.id
+            FROM
+                (SELECT
+                    DISTINCT ON(s.text) s.text,
+                    s.id,
+                    s.page_id
+                FROM sentence_fts AS t
+                JOIN api_sentence AS s ON t.sentence_id = s.id
+                {0}) AS snips
+            JOIN api_page AS p ON snips.page_id = p.id
             JOIN api_document AS d ON p.document_id = d.id
-            JOIN api_collection AS c ON d.collection_id = c.id {0} {1} {2}
+            JOIN api_collection AS c ON d.collection_id = c.id {1} {2}
             GROUP BY d.id
             ORDER BY hits DESC""".format(text_filter, dec_filter, coll_filter)
         cursor.execute(docs_sql, params)
@@ -157,13 +175,20 @@ def document(request, document_id):
         text = ' '.join(text.split())
     sql = """
         SELECT
-            s.text AS snippet,
+            snips.text AS snippet,
             p.url AS page_url
-        FROM sentence_fts AS t
-        JOIN api_sentence AS s ON t.sentence_id = s.id
-        JOIN api_page AS p ON s.page_id = p.id
-        JOIN api_document AS d ON p.document_id = d.id {0}
+        FROM
+            (SELECT
+                DISTINCT ON(s.text) s.text,
+                s.id,
+                s.page_id,
+                s.i_score
+            FROM sentence_fts AS t
+            JOIN api_sentence AS s ON t.sentence_id = s.id {0}) AS snips
+        JOIN api_page AS p ON snips.page_id = p.id
+        JOIN api_document AS d ON p.document_id = d.id
         AND d.id = %(document_id)s
+        ORDER BY snips.i_score DESC
         """.format(text_filter)
     cursor = connection.cursor()
     cursor.execute(sql, params)
