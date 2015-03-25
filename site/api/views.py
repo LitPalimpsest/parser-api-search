@@ -41,6 +41,7 @@ def search(request):
         pattern = re.compile('[^a-zA-Z0-9 ]+')
         if text:
             text = string.replace(pattern.sub('', text).strip(), ' ', '&')
+            text = re.sub(r'&[&]+', '&', text)
             text_filter = ""
             if text != '*':
                 params['query_string'] = '{0}:*'.format(text)
