@@ -14,11 +14,18 @@ class CollectionSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'text', 'documents',)
 
 
-class DocumentSerializer(serializers.HyperlinkedModelSerializer):
+class ListDocumentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Document
         fields = ('url', 'title', 'pubdate', 'author', 'external_url',
-                'collection', 'pages',)
+                  'collection',)
+
+
+class RetrieveDocumentSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Document
+        fields = ('url', 'title', 'pubdate', 'author', 'external_url',
+                  'collection', 'pages',)
 
 
 class PageSerializer(serializers.HyperlinkedModelSerializer):

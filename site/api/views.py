@@ -18,7 +18,8 @@ from api.models import (
         Location,)
 from api.serializers import (
         CollectionSerializer,
-        DocumentSerializer,
+        ListDocumentSerializer,
+        RetrieveDocumentSerializer,
         PageSerializer,
         SentenceSerializer,
         LocationSerializer,)
@@ -224,12 +225,23 @@ class CollectionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CollectionSerializer
 
 
-class DocumentViewSet(viewsets.ReadOnlyModelViewSet):
+class MultiSerializerViewSet(viewsets.ReadOnlyModelViewSet):
+    def get_serializer_class(self):
+            return self.serializers.get(self.action,
+                        self.serializers['list'])
+
+
+class DocumentViewSet(MultiSerializerViewSet):
     """
     API endpoint that allows Documents to be viewed
     """
+
+    serializers = {
+        'list':    ListDocumentSerializer,
+        'retrieve':  RetrieveDocumentSerializer,
+    }
+
     queryset = Document.objects.all()
-    serializer_class = DocumentSerializer
 
 
 class PageViewSet(viewsets.ReadOnlyModelViewSet):
