@@ -4,7 +4,7 @@
 
 {% block page_specific_inline_css %}
 td.center{ text-align: center; }
-.sentence span{ background: lightgoldenrodyellow; }
+.snippet span{ background: lightgoldenrodyellow; }
 {% endblock %}
 
 {% block page_title %}Document - {{ doc.title|truncatechars:100 }}{% if doc.title.length > 100 %}&ellip;{% endif %}{% endblock %}
@@ -47,7 +47,7 @@ td.center{ text-align: center; }
                             </thead>
                         {% for row in snippets %}
                         <tr>
-                            <td class="snippet">{{ row.snippet }}</td>
+                            <td class="snippet">{{ row.snippet|wrap_with_span:text|safe }}</td>
 {#                             <td class="center">{% if row.url %}<a href="{{ row.url }}">View</a>{% endif %}</td> #}
                         </tr>
                         {% endfor %}
