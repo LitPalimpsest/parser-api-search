@@ -5,10 +5,20 @@
 
 litlong:
     secret-key: {{secret_key}}
-    database:
-        engine: {{db_engine}}
-        name: {{db_name}}
-        username: {{db_username}}
-        password: {{db_password}}
-        host: {{db_host}}
-        port: {{db_port}}
+    env:
+        local:
+            database:
+                engine: {{local_db_engine}}
+                name: {{local_db_name}}
+                username: {{local_db_username}}
+                password: {{local_db_password}}
+                host: {{local_db_host}}
+                port: {{local_db_port}}
+        production:
+            database:
+                engine: {{production_db_engine}}
+                name: {{production_db_name}}
+                username: {{production_db_username}}
+                password: {{production_db_password}}
+                host: {{production_db_host}}
+                port: {{production_db_port}}

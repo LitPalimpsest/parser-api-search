@@ -14,12 +14,12 @@ SECRET_KEY = CFG['secret-key']
 
 DATABASES = {
     'default': {
-        'ENGINE': CFG['database']['engine'],
-        'NAME': CFG['database']['name'],
-        'USER': CFG['database']['username'],
-        'PASSWORD': CFG['database']['password'],
-        'HOST': CFG['database']['host'],
-        'PORT': CFG['database']['port'],
+        'ENGINE': CFG['env']['local']['database']['engine'],
+        'NAME': CFG['env']['local']['database']['name'],
+        'USER': CFG['env']['local']['database']['username'],
+        'PASSWORD': CFG['env']['local']['database']['password'],
+        'HOST': CFG['env']['local']['database']['host'],
+        'PORT': CFG['env']['local']['database']['port'],
     }
 }
 
