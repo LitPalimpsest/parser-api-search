@@ -1,3 +1,4 @@
 -r _base.txt # includes the _base.txt requirements file
 gunicorn==19.3.0
+python-memcached==1.54
 setproctitle
