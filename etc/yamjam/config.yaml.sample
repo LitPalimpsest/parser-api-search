@@ -4,6 +4,7 @@
 # with the properties for your environment
 
 litlong:
+    analytics-key: {{analytics_key}} 
     secret-key: {{secret_key}}
     env:
         local:
