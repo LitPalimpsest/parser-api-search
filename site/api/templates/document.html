@@ -42,7 +42,7 @@ td.center{ text-align: center; }
                             <thead>
                                 <tr>
                                     <th>Snippet</th>
-{#                                     <th>Scanned&nbsp;page</th> #}
+                                    {% if doc.collection.id == 2 %}<th>Scanned&nbsp;page</th>{% endif %}
                                 </tr>
                             </thead>
                         {% for row in snippets %}
@@ -50,8 +50,8 @@ td.center{ text-align: center; }
                             <td class="snippet">{{ row.snippet|wrap_with_span:text|add_locations|safe }}</td>
                             {% else %}
                             <td class="snippet">{{ row.snippet|safe }}</td>
-{#                             <td class="center">{% if row.url %}<a href="{{ row.url }}">View</a>{% endif %}</td> #}
                         {% endif %}</tr>
+                            {% if doc.collection.id == 2 %}<td class="center">{% if row.url %}<a href="{{ row.url }}">View</a>{% endif %}</td>{% endif %}</tr>
                         {% endfor %}
                         </table>
                     </div>
