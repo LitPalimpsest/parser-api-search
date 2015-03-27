@@ -4,7 +4,13 @@
 
 {% block page_specific_inline_css %}
 td.center{ text-align: center; }
-.snippet span{ background: lightgoldenrodyellow; }
+.snippet span {
+        .color:#000;
+        background-color:lightgoldenrodyellow;
+        display:inline-block;
+        font-weight: bold;
+        padding:0;
+}
 {% endblock %}
 
 {% block page_title %}Document - {{ doc.title|truncatechars:100 }}{% if doc.title.length > 100 %}&ellip;{% endif %}{% endblock %}
