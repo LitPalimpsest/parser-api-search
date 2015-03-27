@@ -1,6 +1,10 @@
 {%extends "base.html" %}
 
 {% block page_title %}Search{% endblock %}
+{% block page_specific_inline_css %}
+    .nav-list li { font-size: smaller; }
+
+{% endblock %}
 {% block breadcrumb %}
                     <ul class="breadcrumb">
                         <li><a href="/search/">Search</a> <span class="divider">/</span></li>
