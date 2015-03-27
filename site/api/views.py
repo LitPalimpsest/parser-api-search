@@ -222,6 +222,12 @@ def document(request, document_id):
             params['query_string'] = query_string
             text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
         text = ' '.join(text.split())
+    location = request.GET.get('loc', None)
+    loc_filter = ""
+    if location:
+        location = int(location)
+        params['loc_id'] = location
+        loc_filter = "AND l.id = %(loc_id)s"
     sql = """
         SELECT
             snips.text AS snippet,
@@ -234,21 +240,41 @@ def document(request, document_id):
                 s.i_score
             FROM sentence_fts AS t
             JOIN api_sentence AS s ON t.sentence_id = s.id {0}) AS snips
+        JOIN api_locationmention AS m ON snips.id = m.sentence_id
+        JOIN api_location AS l ON m.location_id = l.id
         JOIN api_page AS p ON snips.page_id = p.id
         JOIN api_document AS d ON p.document_id = d.id
-        AND d.id = %(document_id)s
+        AND d.id = %(document_id)s {1}
         ORDER BY snips.i_score DESC
-        """.format(text_filter)
+        """.format(text_filter, loc_filter)
     cursor = connection.cursor()
     cursor.execute(sql, params)
     cols = ['snippet', 'url']
     snippet_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
     snippets = get_paginated_results(request, snippet_list, num_records=10)
 
+    locs_sql = """
+        SELECT
+            DISTINCT ON(text) m.text,
+            l.id
+        FROM sentence_fts AS t
+        JOIN api_sentence AS s ON s.id = t.sentence_id
+        JOIN api_page AS p ON p.id = s.page_id
+        JOIN api_document AS d ON d.id = p.document_id
+        JOIN api_locationmention AS m ON m.sentence_id = s.id
+        JOIN api_location AS l ON l.id = m.location_id {0}
+        AND d.id = %(document_id)s
+        ORDER BY m.text DESC""".format(text_filter)
+    cursor = connection.cursor()
+    cursor.execute(locs_sql, params)
+    cols = ['location', 'locid']
+    locs_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
     return render(request, 'document.html', {
         'doc': doc,
         'text': text,
-        'snippets': snippets, })
+        'snippets': snippets,
+        'locs': locs_list})
 
 
 def get_paginated_results(request, model_list, num_records=25):

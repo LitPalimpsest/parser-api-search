@@ -11,6 +11,7 @@ td.center{ text-align: center; }
         font-weight: bold;
         padding:0;
 }
+.snippet a span { background: transparent;padding:0;}
 {% endblock %}
 
 {% block page_title %}Document - {{ doc.title|truncatechars:100 }}{% if doc.title.length > 100 %}&ellip;{% endif %}{% endblock %}
@@ -44,6 +45,7 @@ td.center{ text-align: center; }
                     {% if snippets %}
                     <div id="snippets">
                         <h4>Snippets in which '{{ text|title }}' is relevant' (Page {{ snippets.number }} of {{ snippets.paginator.num_pages }})</h4>
+                        {% make_list locs text as add_location_args %}
                         <table class="table table-striped table-hover table-condensed">
                             <thead>
                                 <tr>
@@ -53,10 +55,10 @@ td.center{ text-align: center; }
                             </thead>
                         {% for row in snippets %}
                         <tr>{% if text != "*" %}
-                            <td class="snippet">{{ row.snippet|wrap_with_span:text|add_locations|safe }}</td>
+                            <td class="snippet">{{ row.snippet|wrap_with_span:text|add_locations:add_location_args|safe }}</td>
                             {% else %}
-                            <td class="snippet">{{ row.snippet|safe }}</td>
-                        {% endif %}</tr>
+                            <td class="snippet">{{ row.snippet|add_locations:add_location_args|safe }}</td>
+                        {% endif %}
                             {% if doc.collection.id == 2 %}<td class="center">{% if row.url %}<a href="{{ row.url }}">View</a>{% endif %}</td>{% endif %}</tr>
                         {% endfor %}
                         </table>
