@@ -23,3 +23,4 @@ litlong:
                 password: {{production_db_password}}
                 host: {{production_db_host}}
                 port: {{production_db_port}}
+            static-root: {{production_static_root}}
