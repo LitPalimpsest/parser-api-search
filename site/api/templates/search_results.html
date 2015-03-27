@@ -119,6 +119,7 @@
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
 <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+{% if docs %}
 <script>
     jQuery(document).ready(function($) {
         var map = L.map('map').setView([55.949428, -3.192704], 12);
@@ -163,4 +164,5 @@
         };
     });
 </script>
+{% endif %}
 {% endblock %}
