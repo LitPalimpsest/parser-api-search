@@ -107,6 +107,13 @@
                 </div>
             </div>
             {% endif %}
+            {% if  not docs and text != None %}
+            <div class="row-fluid">
+                <div class="span12">
+                    <div id="none-found"><h3>No Books found mentioning '{{ text }}'</h3></div>
+                </div>
+            </div>
+            {% endif %}
 {% endblock %}
 {% block page_specific_js %}            
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
