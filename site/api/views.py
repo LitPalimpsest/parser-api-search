@@ -31,8 +31,9 @@ def home(request):
 
 
 def search(request):
-    docs = decs_list = colls_list = errors = text = decade = collection = None
-    collection_name = ""
+    docs = decs_list = colls_list = locs_list = errors = None
+    text = locid = location = decade = collection = None
+    location_name = collection_name = ""
 
     form = SearchForm(request.GET)
     if form.is_valid():
@@ -51,6 +52,15 @@ def search(request):
                 params['query_string'] = query_string
                 text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
             text = ' '.join(text.split())
+
+        location = request.GET.get('loc', None)
+        loc_filter = ""
+        if location:
+            l = Location.objects.get(id=location)
+            location_name = l.text
+            location = int(location)
+            params['loc_id'] = location
+            loc_filter = "AND l.id = %(loc_id)s"
 
         collection = request.GET.get('collection', None)
         coll_filter = ""
@@ -72,6 +82,32 @@ def search(request):
                 dec_filter = "{0} = %(dec_id)s".format(dec_filter)
 
         cursor = connection.cursor()
+        locs_sql = """
+            SELECT
+                l.id AS locid,
+                l.text AS location,
+                ST_AsText(l.geom) AS point,
+                ST_AsText(l.poly) AS poly,
+                COUNT(*) AS hits
+            FROM
+                (SELECT
+                    DISTINCT ON(s.text) s.text,
+                    s.id,
+                    s.page_id
+                FROM sentence_fts AS t
+                JOIN api_sentence AS s ON t.sentence_id = s.id
+                {0}) AS snips
+            JOIN api_locationmention AS m ON snips.id = m.sentence_id
+            JOIN api_location AS l ON m.location_id = l.id
+            JOIN api_page AS p ON snips.page_id = p.id
+            JOIN api_document AS d ON p.document_id = d.id
+            JOIN api_collection AS c ON d.collection_id = c.id {1} {2} {3}
+            GROUP BY locid, location, point, poly
+            """.format(text_filter, dec_filter, coll_filter, loc_filter)
+        cursor.execute(locs_sql, params)
+        locs = ['id', 'location', 'point', 'poly', 'hits']
+        locs_list = [dict(zip(locs, row)) for row in cursor.fetchall()]
+
         colls_sql = """
             SELECT
                 c.id,
@@ -85,11 +121,14 @@ def search(request):
                 FROM sentence_fts AS t
                 JOIN api_sentence AS s ON t.sentence_id = s.id
                 {0}) AS snips
+            JOIN api_locationmention AS m ON snips.id = m.sentence_id
+            JOIN api_location AS l ON m.location_id = l.id
             JOIN api_page AS p ON snips.page_id = p.id
             JOIN api_document AS d ON p.document_id = d.id
-            JOIN api_collection AS c ON d.collection_id = c.id {1} {2}
+            JOIN api_collection AS c ON d.collection_id = c.id {1} {2} {3}
             GROUP BY c.id, c.text
-            ORDER BY c.text""".format(text_filter, dec_filter, coll_filter)
+            ORDER BY c.text
+            """.format(text_filter, dec_filter, coll_filter, loc_filter)
         cursor.execute(colls_sql, params)
         cols = ['id', 'collection', 'hits']
         colls_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
@@ -109,11 +148,14 @@ def search(request):
                 FROM sentence_fts AS t
                 JOIN api_sentence AS s ON t.sentence_id = s.id
                 {0}) AS snips
+            JOIN api_locationmention AS m ON snips.id = m.sentence_id
+            JOIN api_location AS l ON m.location_id = l.id
             JOIN api_page AS p ON snips.page_id = p.id
             JOIN api_document AS d ON p.document_id = d.id
-            JOIN api_collection AS c ON d.collection_id = c.id {1} {2}
+            JOIN api_collection AS c ON d.collection_id = c.id {1} {2} {3}
             GROUP BY decade
-            ORDER BY decade""".format(text_filter, dec_filter, coll_filter)
+            ORDER BY decade
+            """.format(text_filter, dec_filter, coll_filter, loc_filter)
         cursor.execute(decs_sql, params)
         cols = ['decade', 'hits']
         decs_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
@@ -131,11 +173,14 @@ def search(request):
                 FROM sentence_fts AS t
                 JOIN api_sentence AS s ON t.sentence_id = s.id
                 {0}) AS snips
+            JOIN api_locationmention AS m ON snips.id = m.sentence_id
+            JOIN api_location AS l ON m.location_id = l.id
             JOIN api_page AS p ON snips.page_id = p.id
             JOIN api_document AS d ON p.document_id = d.id
-            JOIN api_collection AS c ON d.collection_id = c.id {1} {2}
+            JOIN api_collection AS c ON d.collection_id = c.id {1} {2} {3}
             GROUP BY d.id
-            ORDER BY hits DESC""".format(text_filter, dec_filter, coll_filter)
+            ORDER BY hits DESC
+            """.format(text_filter, dec_filter, coll_filter, loc_filter)
         cursor.execute(docs_sql, params)
         cols = ['id', 'title', 'hits']
         docs_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
@@ -144,6 +189,7 @@ def search(request):
         errors = form.errors
     return render(request, 'search_results.html', {
         'form': form,
+        'locs': locs_list,
         'colls': colls_list,
         'decs': decs_list,
         'docs': docs,
@@ -151,6 +197,8 @@ def search(request):
         'text': text,
         'decade': decade,
         'collection': collection,
+        'locid': location,
+        'location': location_name,
         'collection_name': collection_name})
 
 

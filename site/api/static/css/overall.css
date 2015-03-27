@@ -32,12 +32,12 @@ html {
  */
 
 ::-moz-selection {
-    background: #b3d4fc;
+    background: #ffffcc;
     text-shadow: none;
 }
 
 ::selection {
-    background: #ff8400;
+    background: #ffffcc;
     text-shadow: none;
 }
 
