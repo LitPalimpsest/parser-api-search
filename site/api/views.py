@@ -211,17 +211,19 @@ def document(request, document_id):
     params = {'document_id': document_id}
     text = request.GET.get('text', None)
     pattern = re.compile('[^a-zA-Z0-9\* ]+')
+    text_filter = ""
     if text:
         text = pattern.sub('', text).strip()
-        text_filter = ""
-        if text != '*':
-            query_string = ""
-            for term in text.split():
-                query_string += '{0}:* & '.format(term)
-            query_string = query_string[:-3]
-            params['query_string'] = query_string
-            text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
-        text = ' '.join(text.split())
+    else:
+        text = "*"
+    if text != '*':
+        query_string = ""
+        for term in text.split():
+            query_string += '{0}:* & '.format(term)
+        query_string = query_string[:-3]
+        params['query_string'] = query_string
+        text_filter = "AND t.fts_tokens @@ to_tsquery(%(query_string)s)"
+    text = ' '.join(text.split())
     location = request.GET.get('loc', None)
     loc_filter = ""
     if location:
