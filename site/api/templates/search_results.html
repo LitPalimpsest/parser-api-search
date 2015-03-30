@@ -137,13 +137,8 @@
         Stamen_TonerLite.addTo(map);
         
         var data = [
-        {% if locid != None %}
         {% for loc in locs %}{% if loc.poly != None %}{wkt: '{{ loc.poly }}',{% else %}{wkt: '{{ loc.point }}',{% endif %} link:'<a href="/search/?loc={{ loc.id }}&text={{ text }}{% if decade %}&decade={{ decade }}{% endif %}{% if collection %}&collection={{ collection }}{%endif %}">{{ loc.location }} ({{ loc.hits }})</a>'},
         {% endfor %}
-        {% else %}
-        {% for loc in locs %}{wkt: '{{ loc.point }}', link:'<a href="/search/?loc={{ loc.id }}&text={{ text }}{% if decade %}&decade={{ decade }}{% endif %}{% if collection %}&collection={{ collection }}{%endif %}">{{ loc.location }} ({{ loc.hits }})</a>'},
-        {% endfor %}
-        {% endif %}
         ];
 
         var markers = new L.MarkerClusterGroup();
@@ -151,9 +146,7 @@
         var feature_array = [];
         for (var i = 0; i < data.length; i++) {
             point = omnivore.wkt.parse(data[i]['wkt']);
-            {% if locid != None %}
             point.setStyle({weight: 2, color: '#359da5'})
-            {% endif %}
             point.bindPopup(data[i]['link']);
             feature_array.push(point.getBounds());
             markers.addLayer(point);
