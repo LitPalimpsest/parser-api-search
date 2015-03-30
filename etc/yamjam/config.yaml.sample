@@ -16,6 +16,12 @@ litlong:
                 host: {{local_db_host}}
                 port: {{local_db_port}}
         production:
+            admins:
+                admin_one_name: {{admin_one_name}}
+                admin_one_email: {{admin_one_email_address}}
+            email:
+                host: {{email_hostname}}
+                support_address: {{support_email_address}}
             database:
                 engine: {{production_db_engine}}
                 name: {{production_db_name}}

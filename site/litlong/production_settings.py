@@ -9,6 +9,13 @@ CFG = yamjam(os.path.join(PROJECT_PATH, 'etc/yamjam/config.yaml'))['litlong']
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+ADMINS = (
+    (CFG['env']['production']['admins']['admin_one_name'], CFG['env']['production']['admins']['admin_one_name']),
+)
+EMAIL_HOST = CFG['env']['production']['email']['host']
+SERVER_EMAIL = CFG['env']['production']['email']['support_address']
+
+MANAGERS = ADMINS
 SECRET_KEY = CFG['secret-key']
 
 DATABASES = {
