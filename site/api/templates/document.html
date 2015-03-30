@@ -59,7 +59,7 @@ td.center{ text-align: center; }
                             {% else %}
                             <td class="snippet">{{ row.snippet|add_locations:add_location_args|safe }}</td>
                         {% endif %}
-                            {% if doc.collection.id == 2 %}<td class="center">{% if row.url %}<a href="{{ row.url }}">View</a>{% endif %}</td>{% endif %}</tr>
+                            {% if doc.collection.id == 2 %}<td class="center">{% if row.url %}<a href="{{ row.url }}" onclick="trackOutboundLink('{{row.url}}'); return false;">View</a>{% endif %}</td>{% endif %}</tr>
                         {% endfor %}
                         </table>
                     </div>
