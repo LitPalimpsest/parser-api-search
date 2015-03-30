@@ -164,6 +164,7 @@ def search(request):
             SELECT
                 d.id,
                 d.title,
+                d.author,
                 COUNT (d.id) AS hits
             FROM
                 (SELECT
@@ -182,7 +183,7 @@ def search(request):
             ORDER BY hits DESC
             """.format(text_filter, dec_filter, coll_filter, loc_filter)
         cursor.execute(docs_sql, params)
-        cols = ['id', 'title', 'hits']
+        cols = ['id', 'title','author', 'hits']
         docs_list = [dict(zip(cols, row)) for row in cursor.fetchall()]
         docs = get_paginated_results(request, docs_list)
     else:

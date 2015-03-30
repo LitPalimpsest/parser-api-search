@@ -75,12 +75,14 @@
                             <thead>
                                 <tr>
                                     <th><i class="icon-book"></i> Book Title</th>
+                                    <th width="30%"><i class="icon-user"></i> Author</th>
                                     <th>#&nbsp;Snippets</th>
                                 </tr>
                             </thead>
                         {% for doc in docs %}
                             <tr>
                                 <td><a href="/search/document/{{ doc.id }}?text={{text}}{% if locid %}&loc={{ locid }}{% endif %}">{{ doc.title }}</a></td>
+                                <td>{{doc.author}}</td>
                                 <td>{{doc.hits|intcomma}}</td>
                             </tr>
                         {% endfor %}
